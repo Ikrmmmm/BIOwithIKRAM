@@ -18,27 +18,27 @@ const questions = [
     {
         question: "What is an inhibitor?",
         answers: {
-            a: "A substance that speeds up a reaction",
-            b: "A substance that slows down a reaction",
-            c: "A type of enzyme"
+            a: "A substance that speeds up a reaction by 2 times",
+            b: "Molecules that bind to an enzyme can reduce the rate of enzyme reaction.",
+            c: "A type of enzyme which stops reaction to occur"
         },
         correctAnswer: "b"
     },
     {
-        question: "Which of the following is a competitive inhibitor?",
+        question: "Which site does the competitive inhibitor binds to?",
         answers: {
-            a: "Penicillin",
-            b: "Cyanide",
-            c: "Methanol"
+            a: "Active site",
+            b: "Siteseeing",
+            c: "Allosteric site"
         },
         correctAnswer: "a"
     },
     {
-        question: "What happens to the reaction rate in the presence of a non-competitive inhibitor?",
+        question: "Which site does the competitive inhibitor binds to?",
         answers: {
-            a: "Increases",
-            b: "Decreases",
-            c: "Remains the same"
+            a: "Siteseeing",
+            b: "Allosteric site",
+            c: "Active site"
         },
         correctAnswer: "b"
     },
