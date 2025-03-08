@@ -43,7 +43,7 @@ const questions = [
         correctAnswer: "b"
     },
     {
-       question: `<img src="SUBSTRATE.jpg" alt="Enzyme Structure" width="150"><br>Which inhibitor binds to the active site of an enzyme?`,
+       question: `<img src="SUBSTRATE.jpg" alt="Substrate" width="150"><br>Which inhibitor binds to the active site of an enzyme?`,
         answers: {
             a: "Substrate",
             b: "Inhibitor B",
@@ -52,7 +52,7 @@ const questions = [
         correctAnswer: "c"
     },
     {
-       question: `<img src="SUBSTRATES.jpg" alt="Inhibitor" width="150"><br>Which one is the allosteric site?`,
+       question: `<img src="SUBSTRATES.jpg" alt="Substrate" width="150"><br>Which one is the allosteric site?`,
         answers: {
             a: "a",
             b: "b",
