@@ -70,6 +70,7 @@ button:hover {
     border: 1px solid #ccc;
     border-radius: 5px;
     cursor: pointer;
+    color: black;
 }
 
 #answers button:hover {
