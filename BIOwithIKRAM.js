@@ -43,7 +43,7 @@ const questions = [
         correctAnswer: "b"
     },
     {
-        question: "Which inhibitor binds to the active site of an enzyme?",
+       question: `<img src="images/enzyme.jpg" alt="Enzyme Structure" width="150"><br>Which inhibitor binds to the active site of an enzyme?`,
         answers: {
             a: "Non-competitive inhibitor",
             b: "Competitive inhibitor",
@@ -52,7 +52,7 @@ const questions = [
         correctAnswer: "b"
     },
     {
-        question: "What is the role of inhibitors in biological systems?",
+       question: `<img src="images/inhibitor.jpg" alt="Inhibitor Mechanism" width="150"><br>What is the role of inhibitors in biological systems?`,
         answers: {
             a: "To increase metabolic rates",
             b: "To regulate enzyme activity",
