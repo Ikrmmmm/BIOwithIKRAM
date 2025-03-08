@@ -99,8 +99,6 @@ function checkAnswer(selectedAnswer) {
     }
     currentQuestionIndex++;
     if (currentQuestionIndex < questions.length) {
-        timeLeft = 5;
-        timerDisplay.textContent = timeLeft;
         showQuestion();
         startTimer();
     } else {
@@ -109,6 +107,14 @@ function checkAnswer(selectedAnswer) {
 }
 
 function startTimer() {
+    // Set timeLeft to 10 seconds for questions 4 and 5 (index 3 and 4)
+    if (currentQuestionIndex === 3 || currentQuestionIndex === 4) {
+        timeLeft = 10;
+    } else {
+        timeLeft = 5; // Default time for other questions
+    }
+    timerDisplay.textContent = timeLeft;
+
     timer = setInterval(() => {
         timeLeft--;
         timerDisplay.textContent = timeLeft;
@@ -117,8 +123,6 @@ function startTimer() {
             resultsContainer.textContent = "Time's up! Moving to the next question.";
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
-                timeLeft = 5;
-                timerDisplay.textContent = timeLeft;
                 showQuestion();
                 startTimer();
             } else {
