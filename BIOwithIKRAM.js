@@ -25,7 +25,7 @@ const questions = [
         correctAnswer: "b"
     },
     {
-        question: "Which site does the competitive inhibitor binds to?",
+        question: "Which site does the competitive inhibitor bind to?",
         answers: {
             a: "Active site",
             b: "Siteseeing",
@@ -34,7 +34,7 @@ const questions = [
         correctAnswer: "a"
     },
     {
-        question: "Which site does the competitive inhibitor binds to?",
+        question: "Which site does the non-competitive inhibitor bind to?",
         answers: {
             a: "Siteseeing",
             b: "Allosteric site",
@@ -43,7 +43,7 @@ const questions = [
         correctAnswer: "b"
     },
     {
-       question: `<img src="SUBSTRATE.jpg" alt="Substrate" width="150"><br>Which inhibitor binds to the active site of an enzyme?`
+        question: `<img src="SUBSTRATE.jpg" alt="Substrate" width="150"><br>Which inhibitor binds to the active site of an enzyme?`,
         answers: {
             a: "Substrate",
             b: "Inhibitor B",
@@ -52,7 +52,7 @@ const questions = [
         correctAnswer: "c"
     },
     {
-      question: `<img src="SUBSTRATES.jpg" alt="Substrates" width="150"><br>Which one is the allosteric site?`,
+        question: `<img src="SUBSTRATES.jpg" alt="Substrates" width="150"><br>Which one is the allosteric site?`,
         answers: {
             a: "a",
             b: "b",
@@ -78,7 +78,7 @@ function startQuiz() {
 
 function showQuestion() {
     const currentQuestion = questions[currentQuestionIndex];
-    questionDisplay.textContent = currentQuestion.question;
+    questionDisplay.innerHTML = currentQuestion.question; // Use innerHTML to render the image
     answersDisplay.innerHTML = '';
     for (const [key, value] of Object.entries(currentQuestion.answers)) {
         const button = document.createElement('button');
