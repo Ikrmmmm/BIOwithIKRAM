@@ -43,20 +43,20 @@ const questions = [
         correctAnswer: "b"
     },
     {
-       question: `<img src="images/enzyme.jpg" alt="Enzyme Structure" width="150"><br>Which inhibitor binds to the active site of an enzyme?`,
+       question: `<img src="images/SUBSTRATE.jpg" alt="Enzyme Structure" width="150"><br>Which inhibitor binds to the active site of an enzyme?`,
         answers: {
-            a: "Non-competitive inhibitor",
-            b: "Competitive inhibitor",
-            c: "Uncompetitive inhibitor"
+            a: "Substrate",
+            b: "Inhibitor B",
+            c: "Inhibitor A"
         },
-        correctAnswer: "b"
+        correctAnswer: "c"
     },
     {
-       question: `<img src="images/inhibitor.jpg" alt="Inhibitor Mechanism" width="150"><br>What is the role of inhibitors in biological systems?`,
+       question: `<img src="images/SUBSTRATE (1).jpg" alt="Inhibitor" width="150"><br>Which one is the allosteric site?`,
         answers: {
-            a: "To increase metabolic rates",
-            b: "To regulate enzyme activity",
-            c: "To destroy enzymes"
+            a: "a",
+            b: "b",
+            c: "c"
         },
         correctAnswer: "b"
     }
