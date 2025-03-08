@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inhibitors Quiz</title>
+    <link rel="stylesheet" href="BIOwithIKRAM.css">
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Inhibitors Quiz</h1>
+        <div id="start-screen">
+            <label for="name">Enter your name:</label>
+            <input type="text" id="name" placeholder="Your name">
+            <button id="start-btn">Start Quiz</button>
+        </div>
+        <div id="quiz" style="display: none;">
+            <div id="timer">Time left: <span id="time">5</span>s</div>
+            <div id="question"></div>
+            <div id="answers"></div>
+        </div>
+        <div id="results" style="display: none;"></div>
+        <div id="ranking" style="display: none;">
+            <h2>Ranking</h2>
+            <ul id="ranking-list"></ul>
+        </div>
+    </div>
+    <script src="BIOwithIKRAM.js"></script>
+</body>
+</html>

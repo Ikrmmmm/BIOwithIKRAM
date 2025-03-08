@@ -1,0 +1,150 @@
+const quizContainer = document.getElementById('quiz');
+const resultsContainer = document.getElementById('results');
+const startScreen = document.getElementById('start-screen');
+const quizScreen = document.getElementById('quiz');
+const timerDisplay = document.getElementById('time');
+const questionDisplay = document.getElementById('question');
+const answersDisplay = document.getElementById('answers');
+const rankingList = document.getElementById('ranking-list');
+const rankingSection = document.getElementById('ranking');
+
+let userName = '';
+let currentQuestionIndex = 0;
+let score = 0;
+let timer;
+let timeLeft = 5;
+
+const questions = [
+    {
+        question: "What is an inhibitor?",
+        answers: {
+            a: "A substance that speeds up a reaction",
+            b: "A substance that slows down a reaction",
+            c: "A type of enzyme"
+        },
+        correctAnswer: "b"
+    },
+    {
+        question: "Which of the following is a competitive inhibitor?",
+        answers: {
+            a: "Penicillin",
+            b: "Cyanide",
+            c: "Methanol"
+        },
+        correctAnswer: "a"
+    },
+    {
+        question: "What happens to the reaction rate in the presence of a non-competitive inhibitor?",
+        answers: {
+            a: "Increases",
+            b: "Decreases",
+            c: "Remains the same"
+        },
+        correctAnswer: "b"
+    },
+    {
+        question: "Which inhibitor binds to the active site of an enzyme?",
+        answers: {
+            a: "Non-competitive inhibitor",
+            b: "Competitive inhibitor",
+            c: "Uncompetitive inhibitor"
+        },
+        correctAnswer: "b"
+    },
+    {
+        question: "What is the role of inhibitors in biological systems?",
+        answers: {
+            a: "To increase metabolic rates",
+            b: "To regulate enzyme activity",
+            c: "To destroy enzymes"
+        },
+        correctAnswer: "b"
+    }
+];
+
+const ranking = [];
+
+function startQuiz() {
+    userName = document.getElementById('name').value.trim();
+    if (!userName) {
+        alert("Please enter your name!");
+        return;
+    }
+    startScreen.style.display = 'none';
+    quizScreen.style.display = 'block';
+    showQuestion();
+    startTimer();
+}
+
+function showQuestion() {
+    const currentQuestion = questions[currentQuestionIndex];
+    questionDisplay.textContent = currentQuestion.question;
+    answersDisplay.innerHTML = '';
+    for (const [key, value] of Object.entries(currentQuestion.answers)) {
+        const button = document.createElement('button');
+        button.textContent = value;
+        button.addEventListener('click', () => checkAnswer(key));
+        answersDisplay.appendChild(button);
+    }
+}
+
+function checkAnswer(selectedAnswer) {
+    clearInterval(timer);
+    const currentQuestion = questions[currentQuestionIndex];
+    if (selectedAnswer === currentQuestion.correctAnswer) {
+        resultsContainer.textContent = "Good job! Correct answer.";
+        score++;
+    } else {
+        resultsContainer.textContent = `Wrong! The correct answer is ${currentQuestion.answers[currentQuestion.correctAnswer]}.`;
+    }
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        timeLeft = 5;
+        timerDisplay.textContent = timeLeft;
+        showQuestion();
+        startTimer();
+    } else {
+        endQuiz();
+    }
+}
+
+function startTimer() {
+    timer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            resultsContainer.textContent = "Time's up! Moving to the next question.";
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                timeLeft = 5;
+                timerDisplay.textContent = timeLeft;
+                showQuestion();
+                startTimer();
+            } else {
+                endQuiz();
+            }
+        }
+    }, 1000);
+}
+
+function endQuiz() {
+    quizScreen.style.display = 'none';
+    resultsContainer.style.display = 'block';
+    resultsContainer.textContent = `${userName}, your score is ${score}/${questions.length}.`;
+    ranking.push({ name: userName, score: score });
+    updateRanking();
+    rankingSection.style.display = 'block';
+}
+
+function updateRanking() {
+    ranking.sort((a, b) => b.score - a.score);
+    rankingList.innerHTML = '';
+    ranking.forEach((entry, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${index + 1}. ${entry.name}: ${entry.score}`;
+        rankingList.appendChild(li);
+    });
+}
+
+document.getElementById('start-btn').addEventListener('click', startQuiz);
