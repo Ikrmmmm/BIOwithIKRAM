@@ -12,7 +12,7 @@ let userName = '';
 let currentQuestionIndex = 0;
 let score = 0;
 let timer;
-let timeLeft = 5;
+let timeLeft;
 let startTime;
 let endTime;
 let timeTaken;
@@ -108,6 +108,15 @@ function showQuestion() {
     const currentQuestion = questions[currentQuestionIndex];
     questionDisplay.innerHTML = currentQuestion.question;
     answersDisplay.innerHTML = '';
+
+    // Set timeLeft based on the question index
+    if (currentQuestionIndex < 3) {
+        timeLeft = 10; // Questions 1, 2, and 3 have 10 seconds
+    } else {
+        timeLeft = 15; // Questions 4 and 5 have 15 seconds
+    }
+    timerDisplay.textContent = timeLeft;
+
     for (const [key, value] of Object.entries(currentQuestion.answers)) {
         const button = document.createElement('button');
         button.textContent = value;
@@ -127,8 +136,6 @@ function checkAnswer(selectedAnswer) {
     }
     currentQuestionIndex++;
     if (currentQuestionIndex < questions.length) {
-        timeLeft = (currentQuestionIndex === 3 || currentQuestionIndex === 4) ? 10 : 5;
-        timerDisplay.textContent = timeLeft;
         showQuestion();
         startTimer();
     } else {
@@ -145,8 +152,6 @@ function startTimer() {
             resultsContainer.textContent = "Time's up! Moving to the next question.";
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
-                timeLeft = (currentQuestionIndex === 3 || currentQuestionIndex === 4) ? 10 : 5;
-                timerDisplay.textContent = timeLeft;
                 showQuestion();
                 startTimer();
             } else {
