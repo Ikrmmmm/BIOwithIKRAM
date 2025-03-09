@@ -13,6 +13,9 @@ let currentQuestionIndex = 0;
 let score = 0;
 let timer;
 let timeLeft = 5;
+let startTime; // Track when the quiz starts
+let endTime; // Track when the quiz ends
+let timeTaken; // Track total time taken
 
 const questions = [
     {
@@ -62,7 +65,7 @@ const questions = [
     }
 ];
 
-const ranking = [];
+const ranking = []; // Store all participants' data
 
 function startQuiz() {
     userName = document.getElementById('name').value.trim();
@@ -72,13 +75,14 @@ function startQuiz() {
     }
     startScreen.style.display = 'none';
     quizScreen.style.display = 'block';
+    startTime = new Date(); // Record the start time
     showQuestion();
     startTimer();
 }
 
 function showQuestion() {
     const currentQuestion = questions[currentQuestionIndex];
-    questionDisplay.innerHTML = currentQuestion.question; // Use innerHTML to render the image
+    questionDisplay.innerHTML = currentQuestion.question;
     answersDisplay.innerHTML = '';
     for (const [key, value] of Object.entries(currentQuestion.answers)) {
         const button = document.createElement('button');
@@ -99,6 +103,8 @@ function checkAnswer(selectedAnswer) {
     }
     currentQuestionIndex++;
     if (currentQuestionIndex < questions.length) {
+        timeLeft = (currentQuestionIndex === 3 || currentQuestionIndex === 4) ? 10 : 5; // Set timer for questions 4 and 5
+        timerDisplay.textContent = timeLeft;
         showQuestion();
         startTimer();
     } else {
@@ -107,14 +113,6 @@ function checkAnswer(selectedAnswer) {
 }
 
 function startTimer() {
-    // Set timeLeft to 15 seconds for questions 4 and 5 (index 3 and 4)
-    if (currentQuestionIndex === 3 || currentQuestionIndex === 4) {
-        timeLeft = 15;
-    } else {
-        timeLeft = 10; // Default time for other questions
-    }
-    timerDisplay.textContent = timeLeft;
-
     timer = setInterval(() => {
         timeLeft--;
         timerDisplay.textContent = timeLeft;
@@ -123,6 +121,8 @@ function startTimer() {
             resultsContainer.textContent = "Time's up! Moving to the next question.";
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
+                timeLeft = (currentQuestionIndex === 3 || currentQuestionIndex === 4) ? 10 : 5; // Set timer for questions 4 and 5
+                timerDisplay.textContent = timeLeft;
                 showQuestion();
                 startTimer();
             } else {
@@ -133,20 +133,36 @@ function startTimer() {
 }
 
 function endQuiz() {
+    endTime = new Date(); // Record the end time
+    timeTaken = (endTime - startTime) / 1000; // Calculate total time taken in seconds
     quizScreen.style.display = 'none';
     resultsContainer.style.display = 'block';
-    resultsContainer.textContent = `${userName}, your score is ${score}/${questions.length}.`;
-    ranking.push({ name: userName, score: score });
+    resultsContainer.textContent = `${userName}, your score is ${score}/${questions.length}. Time taken: ${timeTaken.toFixed(2)} seconds.`;
+
+    // Add current participant's data to the ranking array
+    ranking.push({ name: userName, score: score, timeTaken: timeTaken });
+
+    // Update and display the ranking
     updateRanking();
     rankingSection.style.display = 'block';
 }
 
 function updateRanking() {
-    ranking.sort((a, b) => b.score - a.score);
+    // Sort the ranking array by score (descending) and timeTaken (ascending)
+    ranking.sort((a, b) => {
+        if (b.score === a.score) {
+            return a.timeTaken - b.timeTaken; // If scores are equal, sort by timeTaken
+        }
+        return b.score - a.score; // Sort by score first
+    });
+
+    // Clear the current ranking list
     rankingList.innerHTML = '';
+
+    // Display the sorted ranking
     ranking.forEach((entry, index) => {
         const li = document.createElement('li');
-        li.textContent = `${index + 1}. ${entry.name}: ${entry.score}`;
+        li.textContent = `${index + 1}. ${entry.name}: ${entry.score} points (${entry.timeTaken.toFixed(2)} seconds)`;
         rankingList.appendChild(li);
     });
 }
