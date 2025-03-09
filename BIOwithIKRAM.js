@@ -13,9 +13,9 @@ let currentQuestionIndex = 0;
 let score = 0;
 let timer;
 let timeLeft = 5;
-let startTime; // Track when the quiz starts
-let endTime; // Track when the quiz ends
-let timeTaken; // Track total time taken
+let startTime;
+let endTime;
+let timeTaken;
 
 const questions = [
     {
@@ -65,7 +65,8 @@ const questions = [
     }
 ];
 
-const ranking = []; // Store all participants' data
+// Load ranking from local storage or initialize an empty array
+let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
 
 function startQuiz() {
     userName = document.getElementById('name').value.trim();
@@ -75,7 +76,7 @@ function startQuiz() {
     }
     startScreen.style.display = 'none';
     quizScreen.style.display = 'block';
-    startTime = new Date(); // Record the start time
+    startTime = new Date();
     showQuestion();
     startTimer();
 }
@@ -103,7 +104,7 @@ function checkAnswer(selectedAnswer) {
     }
     currentQuestionIndex++;
     if (currentQuestionIndex < questions.length) {
-        timeLeft = (currentQuestionIndex === 3 || currentQuestionIndex === 4) ? 10 : 5; // Set timer for questions 4 and 5
+        timeLeft = (currentQuestionIndex === 3 || currentQuestionIndex === 4) ? 10 : 5;
         timerDisplay.textContent = timeLeft;
         showQuestion();
         startTimer();
@@ -121,7 +122,7 @@ function startTimer() {
             resultsContainer.textContent = "Time's up! Moving to the next question.";
             currentQuestionIndex++;
             if (currentQuestionIndex < questions.length) {
-                timeLeft = (currentQuestionIndex === 3 || currentQuestionIndex === 4) ? 10 : 5; // Set timer for questions 4 and 5
+                timeLeft = (currentQuestionIndex === 3 || currentQuestionIndex === 4) ? 10 : 5;
                 timerDisplay.textContent = timeLeft;
                 showQuestion();
                 startTimer();
@@ -133,14 +134,17 @@ function startTimer() {
 }
 
 function endQuiz() {
-    endTime = new Date(); // Record the end time
-    timeTaken = (endTime - startTime) / 1000; // Calculate total time taken in seconds
+    endTime = new Date();
+    timeTaken = (endTime - startTime) / 1000;
     quizScreen.style.display = 'none';
     resultsContainer.style.display = 'block';
     resultsContainer.textContent = `${userName}, your score is ${score}/${questions.length}. Time taken: ${timeTaken.toFixed(2)} seconds.`;
 
     // Add current participant's data to the ranking array
     ranking.push({ name: userName, score: score, timeTaken: timeTaken });
+
+    // Save the updated ranking to local storage
+    localStorage.setItem('ranking', JSON.stringify(ranking));
 
     // Update and display the ranking
     updateRanking();
@@ -151,9 +155,9 @@ function updateRanking() {
     // Sort the ranking array by score (descending) and timeTaken (ascending)
     ranking.sort((a, b) => {
         if (b.score === a.score) {
-            return a.timeTaken - b.timeTaken; // If scores are equal, sort by timeTaken
+            return a.timeTaken - b.timeTaken;
         }
-        return b.score - a.score; // Sort by score first
+        return b.score - a.score;
     });
 
     // Clear the current ranking list
@@ -166,5 +170,8 @@ function updateRanking() {
         rankingList.appendChild(li);
     });
 }
+
+// Load and display the ranking when the page loads
+updateRanking();
 
 document.getElementById('start-btn').addEventListener('click', startQuiz);
