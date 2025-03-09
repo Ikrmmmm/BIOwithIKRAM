@@ -68,6 +68,28 @@ const questions = [
 // Load ranking from local storage or initialize an empty array
 let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
 
+// Function to update the ranking list in the DOM
+function updateRanking() {
+    // Sort the ranking array by score (descending) and timeTaken (ascending)
+    ranking.sort((a, b) => {
+        if (b.score === a.score) {
+            return a.timeTaken - b.timeTaken;
+        }
+        return b.score - a.score;
+    });
+
+    // Clear the current ranking list
+    rankingList.innerHTML = '';
+
+    // Display the sorted ranking
+    ranking.forEach((entry, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${index + 1}. ${entry.name}: ${entry.score} points (${entry.timeTaken.toFixed(2)} seconds)`;
+        rankingList.appendChild(li);
+    });
+}
+
+// Show the ranking section as soon as the quiz starts
 function startQuiz() {
     userName = document.getElementById('name').value.trim();
     if (!userName) {
@@ -76,6 +98,7 @@ function startQuiz() {
     }
     startScreen.style.display = 'none';
     quizScreen.style.display = 'block';
+    rankingSection.style.display = 'block'; // Show the ranking section
     startTime = new Date();
     showQuestion();
     startTimer();
@@ -146,29 +169,8 @@ function endQuiz() {
     // Save the updated ranking to local storage
     localStorage.setItem('ranking', JSON.stringify(ranking));
 
-    // Update and display the ranking
+    // Update the ranking list in real time
     updateRanking();
-    rankingSection.style.display = 'block';
-}
-
-function updateRanking() {
-    // Sort the ranking array by score (descending) and timeTaken (ascending)
-    ranking.sort((a, b) => {
-        if (b.score === a.score) {
-            return a.timeTaken - b.timeTaken;
-        }
-        return b.score - a.score;
-    });
-
-    // Clear the current ranking list
-    rankingList.innerHTML = '';
-
-    // Display the sorted ranking
-    ranking.forEach((entry, index) => {
-        const li = document.createElement('li');
-        li.textContent = `${index + 1}. ${entry.name}: ${entry.score} points (${entry.timeTaken.toFixed(2)} seconds)`;
-        rankingList.appendChild(li);
-    });
 }
 
 // Load and display the ranking when the page loads
