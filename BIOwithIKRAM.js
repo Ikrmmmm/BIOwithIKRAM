@@ -107,11 +107,11 @@ function checkAnswer(selectedAnswer) {
 }
 
 function startTimer() {
-    // Set timeLeft to 10 seconds for questions 4 and 5 (index 3 and 4)
+    // Set timeLeft to 15 seconds for questions 4 and 5 (index 3 and 4)
     if (currentQuestionIndex === 3 || currentQuestionIndex === 4) {
-        timeLeft = 10;
+        timeLeft = 15;
     } else {
-        timeLeft = 5; // Default time for other questions
+        timeLeft = 10; // Default time for other questions
     }
     timerDisplay.textContent = timeLeft;
 
