@@ -1,4 +1,3 @@
-// Firebase configuration (replace with your Firebase project config)
 const firebaseConfig = {
     apiKey: "YOUR_API_KEY",
     authDomain: "YOUR_AUTH_DOMAIN",
@@ -8,7 +7,6 @@ const firebaseConfig = {
     appId: "YOUR_APP_ID"
 };
 
-// Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -79,7 +77,6 @@ const questions = [
     }
 ];
 
-// Function to update the ranking list in the DOM
 function updateRanking(ranking) {
     ranking.sort((a, b) => {
         if (b.score === a.score) {
@@ -96,7 +93,6 @@ function updateRanking(ranking) {
         rankingList.appendChild(li);
 }
 
-// Listen for real-time updates from Firestore
 db.collection('ranking').onSnapshot((snapshot) => {
     const ranking = [];
     snapshot.forEach((doc) => {
@@ -105,7 +101,6 @@ db.collection('ranking').onSnapshot((snapshot) => {
     updateRanking(ranking);
 });
 
-// Function to delete ranking history after 15 minutes
 function deleteRankingAfter15Minutes() {
     setTimeout(async () => {
         const rankingRef = db.collection('ranking');
@@ -118,10 +113,8 @@ function deleteRankingAfter15Minutes() {
     }, 900000);
 }
 
-// Call the function to start the 15-minute timer
 deleteRankingAfter15Minutes();
 
-// Show the ranking section as soon as the quiz starts
 function startQuiz() {
     userName = document.getElementById('name').value.trim();
     if (!userName) {
