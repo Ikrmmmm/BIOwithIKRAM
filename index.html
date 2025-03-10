@@ -5,33 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BIO with IKRAM</title>
     <link rel="stylesheet" href="BIOwithIKRAM.css">
+    <!-- Add Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 </head>
 <body>
+    <!-- Header Section -->
     <header>
-        <h2>Biology made easy with Ikram! 😊</h2>
+        <h1>Biology made easy with Ikram! 😊</h1>
     </header>
 
     <div class="quiz-container">
-        <h1>Inhibitors Quiz</h1>
+        <!-- Start Screen -->
         <div id="start-screen">
             <label for="name">Enter your name:</label>
             <input type="text" id="name" placeholder="Your name">
             <button id="start-btn">Start Quiz</button>
         </div>
+
+        <!-- Quiz Section -->
         <div id="quiz" style="display: none;">
             <div id="timer">Time left: <span id="time">10</span>s</div>
             <div id="question"></div>
             <div id="answers"></div>
         </div>
+
+        <!-- Results Section -->
         <div id="results" style="display: none;"></div>
+
+        <!-- Ranking Section -->
         <div id="ranking" style="display: none;">
             <h2>Ranking</h2>
             <ul id="ranking-list"></ul>
         </div>
     </div>
 
+    <!-- Include your JavaScript here -->
     <script src="BIOwithIKRAM.js"></script>
 </body>
 </html>
