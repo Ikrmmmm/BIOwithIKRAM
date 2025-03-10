@@ -10,24 +10,24 @@ body {
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #3b9ccc, #18a360);
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* Stack elements vertically */
+    justify-content: flex-start; /* Start from top */
     align-items: center;
-    height: 100vh;
+    height: 100vh; /* Ensure full height */
     margin: 0;
-    flex-direction: column; /* Ensure everything is stacked vertically */
 }
 
 /* Header Styling */
 header {
     text-align: center;
-    margin-bottom: 20px; /* Space between header and quiz container */
+    width: 100%; /* Make sure header spans the full width */
     font-size: 24px;
     font-weight: bold;
     color: #fff; /* White text */
     background-color: #18a360; /* Same as your quiz container background */
-    padding: 10px;
+    padding: 15px 0; /* Add vertical padding */
     border-radius: 8px;
-    width: 100%; /* Make sure it spans the full width */
+    margin-bottom: 20px; /* Add space between header and quiz */
 }
 
 /* Quiz Container Styling */
