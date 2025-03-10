@@ -10,7 +10,7 @@ const firebaseConfig = {
 
 // Import Firebase functions (adjusted to Firebase 9.x modular imports)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -103,8 +103,10 @@ function updateRanking(ranking) {
 
 // Real-time listener for Firestore updates
 onSnapshot(collection(db, 'ranking'), (snapshot) => {
+    console.log("Snapshot received!");
     const ranking = [];
     snapshot.forEach((doc) => {
+        console.log("Document ID: ", doc.id, " Data: ", doc.data());
         ranking.push(doc.data());
     });
     updateRanking(ranking); // Update the ranking UI when Firestore changes
@@ -208,6 +210,12 @@ function endQuiz() {
         name: userName,
         score: score,
         timeTaken: timeTaken
+    })
+    .then(() => {
+        console.log("New ranking entry added successfully!");
+    })
+    .catch((error) => {
+        console.error("Error adding document: ", error);
     });
 }
 
@@ -216,8 +224,5 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('start-btn').addEventListener('click', startQuiz);
 });
 
-
-// Wait for the DOM to be fully loaded before adding event listener
-document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('start-btn').addEventListener('click', startQuiz);
 });
