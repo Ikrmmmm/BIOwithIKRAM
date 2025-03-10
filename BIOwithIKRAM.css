@@ -1,4 +1,4 @@
-/* Reset some default styles for better control */
+/* Reset default styles */
 * {
     margin: 0;
     padding: 0;
@@ -10,24 +10,24 @@ body {
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #3b9ccc, #18a360);
     display: flex;
-    flex-direction: column; /* Stack elements vertically */
-    justify-content: flex-start; /* Start from top */
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
-    height: 100vh; /* Ensure full height */
+    height: 100vh;
     margin: 0;
 }
 
 /* Header Styling */
 header {
     text-align: center;
-    width: 100%; /* Make sure header spans the full width */
+    width: 100%;
     font-size: 24px;
     font-weight: bold;
-    color: #fff; /* White text */
-    background-color: #18a360; /* Same as your quiz container background */
-    padding: 15px 0; /* Add vertical padding */
+    color: #fff;
+    background-color: #18a360;
+    padding: 15px 0;
     border-radius: 8px;
-    margin-bottom: 20px; /* Add space between header and quiz */
+    margin-bottom: 20px;
 }
 
 /* Quiz Container Styling */
