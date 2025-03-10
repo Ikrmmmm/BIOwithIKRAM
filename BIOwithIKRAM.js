@@ -79,54 +79,7 @@ const questions = [
     }
 ];
 
-// Function to update the ranking list in the DOM
-function updateRanking(ranking) {
-    // Sort the ranking array by score (descending) and timeTaken (ascending)
-    ranking.sort((a, b) => {
-        if (b.score === a.score) {
-            return a.timeTaken - b.timeTaken;
-        }
-        return b.score - a.score;
-    });
-
-    // Clear the current ranking list
-    rankingList.innerHTML = '';
-
-    // Display the sorted ranking
-    ranking.forEach((entry, index) => {
-        const li = document.createElement('li');
-        li.textContent = `${index + 1}. ${entry.name}: ${entry.score} points (${entry.timeTaken.toFixed(2)} seconds)`;
-        rankingList.appendChild(li);
-    });
-}
-
-// Listen for real-time updates from Firestore
-db.collection('ranking').onSnapshot((snapshot) => {
-    const ranking = [];
-    snapshot.forEach((doc) => {
-        ranking.push(doc.data());
-    });
-    updateRanking(ranking);
-});
-
-// Function to delete ranking history after 15 minutes
-function deleteRankingAfter15Minutes() {
-    setTimeout(async () => {
-        // Clear the Firestore collection
-        const rankingRef = db.collection('ranking');
-        const snapshot = await rankingRef.get();
-        snapshot.forEach((doc) => {
-            doc.ref.delete();
-        });
-        alert("The ranking has been reset after 15 minutes.");
-        updateRanking([]); // Clear the ranking in the UI
-    }, 900000); // 15 minutes in milliseconds (15 * 60 * 1000)
-}
-
-// Call the function to start the 15-minute timer
-deleteRankingAfter15Minutes();
-
-// Show the ranking section as soon as the quiz starts
+// Function to start the quiz
 function startQuiz() {
     userName = document.getElementById('name').value.trim();
     if (!userName) {
@@ -141,6 +94,7 @@ function startQuiz() {
     startTimer();
 }
 
+// Display the current question
 function showQuestion() {
     const currentQuestion = questions[currentQuestionIndex];
     questionDisplay.innerHTML = currentQuestion.question;
@@ -154,6 +108,7 @@ function showQuestion() {
     }
     timerDisplay.textContent = timeLeft;
 
+    // Display the answers
     for (const [key, value] of Object.entries(currentQuestion.answers)) {
         const button = document.createElement('button');
         button.textContent = value;
@@ -162,6 +117,7 @@ function showQuestion() {
     }
 }
 
+// Check the user's answer
 function checkAnswer(selectedAnswer) {
     clearInterval(timer);
     const currentQuestion = questions[currentQuestionIndex];
@@ -180,6 +136,7 @@ function checkAnswer(selectedAnswer) {
     }
 }
 
+// Start the timer for each question
 function startTimer() {
     timer = setInterval(() => {
         timeLeft--;
@@ -191,6 +148,7 @@ function startTimer() {
     }, 1000);
 }
 
+// End the quiz and show the results
 function endQuiz() {
     endTime = new Date();
     timeTaken = (endTime - startTime) / 1000; // Time in seconds
