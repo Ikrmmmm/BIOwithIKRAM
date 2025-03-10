@@ -104,7 +104,7 @@ function updateRanking(ranking) {
     });
 }
 
-// Listen for real-time updates from Firestore
+// Real-time listener for Firestore updates (this will update the ranking without refreshing)
 onSnapshot(collection(db, 'ranking'), (snapshot) => {
     const ranking = [];
     snapshot.forEach((doc) => {
@@ -221,4 +221,3 @@ function endQuiz() {
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('start-btn').addEventListener('click', startQuiz);
 });
-
