@@ -1,3 +1,17 @@
+// Firebase configuration (replace with your Firebase project config)
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 const quizContainer = document.getElementById('quiz');
 const resultsContainer = document.getElementById('results');
 const startScreen = document.getElementById('start-screen');
@@ -65,11 +79,8 @@ const questions = [
     }
 ];
 
-// Load ranking from local storage or initialize an empty array
-let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
-
 // Function to update the ranking list in the DOM
-function updateRanking() {
+function updateRanking(ranking) {
     // Sort the ranking array by score (descending) and timeTaken (ascending)
     ranking.sort((a, b) => {
         if (b.score === a.score) {
@@ -88,6 +99,15 @@ function updateRanking() {
         rankingList.appendChild(li);
     });
 }
+
+// Listen for real-time updates from Firestore
+db.collection('ranking').onSnapshot((snapshot) => {
+    const ranking = [];
+    snapshot.forEach((doc) => {
+        ranking.push(doc.data());
+    });
+    updateRanking(ranking);
+});
 
 // Show the ranking section as soon as the quiz starts
 function startQuiz() {
@@ -168,17 +188,13 @@ function endQuiz() {
     resultsContainer.style.display = 'block';
     resultsContainer.textContent = `${userName}, your score is ${score}/${questions.length}. Time taken: ${timeTaken.toFixed(2)} seconds.`;
 
-    // Add current participant's data to the ranking array
-    ranking.push({ name: userName, score: score, timeTaken: timeTaken });
-
-    // Save the updated ranking to local storage
-    localStorage.setItem('ranking', JSON.stringify(ranking));
-
-    // Update the ranking list in real time
-    updateRanking();
+    // Add current participant's data to Firestore
+    db.collection('ranking').add({
+        name: userName,
+        score: score,
+        timeTaken: timeTaken
+    });
 }
 
 // Load and display the ranking when the page loads
-updateRanking();
-
 document.getElementById('start-btn').addEventListener('click', startQuiz);
