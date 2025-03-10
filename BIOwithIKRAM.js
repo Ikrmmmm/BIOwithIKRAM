@@ -8,9 +8,13 @@ const firebaseConfig = {
     appId: "YOUR_APP_ID"
 };
 
+// Import Firebase functions
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+import { getFirestore, collection, addDoc, onSnapshot, getDocs, deleteDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const quizContainer = document.getElementById('quiz');
 const resultsContainer = document.getElementById('results');
@@ -101,7 +105,7 @@ function updateRanking(ranking) {
 }
 
 // Listen for real-time updates from Firestore
-db.collection('ranking').onSnapshot((snapshot) => {
+onSnapshot(collection(db, 'ranking'), (snapshot) => {
     const ranking = [];
     snapshot.forEach((doc) => {
         ranking.push(doc.data());
@@ -113,10 +117,10 @@ db.collection('ranking').onSnapshot((snapshot) => {
 function deleteRankingAfter15Minutes() {
     setTimeout(async () => {
         // Clear the Firestore collection
-        const rankingRef = db.collection('ranking');
-        const snapshot = await rankingRef.get();
-        snapshot.forEach((doc) => {
-            doc.ref.delete();
+        const rankingRef = collection(db, 'ranking');
+        const snapshot = await getDocs(rankingRef);
+        snapshot.forEach(async (doc) => {
+            await deleteDoc(doc.ref);
         });
         alert("The ranking has been reset after 15 minutes.");
         updateRanking([]); // Clear the ranking in the UI
@@ -206,12 +210,15 @@ function endQuiz() {
     resultsContainer.textContent = `${userName}, your score is ${score}/${questions.length}. Time taken: ${timeTaken.toFixed(2)} seconds.`;
 
     // Add current participant's data to Firestore
-    db.collection('ranking').add({
+    addDoc(collection(db, 'ranking'), {
         name: userName,
         score: score,
         timeTaken: timeTaken
     });
 }
 
-// Load and display the ranking when the page loads
-document.getElementById('start-btn').addEventListener('click', startQuiz);
+// Wait for the DOM to be fully loaded before adding event listener
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('start-btn').addEventListener('click', startQuiz);
+});
+
