@@ -79,7 +79,32 @@ const questions = [
     }
 ];
 
-// Function to start the quiz
+// Function to update the ranking list in the DOM
+function updateRanking(ranking) {
+    ranking.sort((a, b) => {
+        if (b.score === a.score) {
+            return a.timeTaken - b.timeTaken;
+        }
+        return b.score - a.score;
+    });
+
+    rankingList.innerHTML = '';
+    ranking.forEach((entry, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${index + 1}. ${entry.name}: ${entry.score} points (${entry.timeTaken.toFixed(2)} seconds)`;
+        rankingList.appendChild(li);
+}
+
+// Listen for real-time updates from Firestore
+db.collection('ranking').onSnapshot((snapshot) => {
+    const ranking = [];
+    snapshot.forEach((doc) => {
+        ranking.push(doc.data());
+    });
+    updateRanking(ranking);
+});
+
+// Start the quiz
 function startQuiz() {
     userName = document.getElementById('name').value.trim();
     if (!userName) {
@@ -94,7 +119,7 @@ function startQuiz() {
     startTimer();
 }
 
-// Display the current question
+// Show the current question
 function showQuestion() {
     const currentQuestion = questions[currentQuestionIndex];
     questionDisplay.innerHTML = currentQuestion.question;
@@ -102,13 +127,12 @@ function showQuestion() {
 
     // Set timeLeft based on the question index
     if (currentQuestionIndex < 3) {
-        timeLeft = 10; // Questions 1, 2, and 3 have 10 seconds
+        timeLeft = 10;
     } else {
-        timeLeft = 15; // Questions 4 and 5 have 15 seconds
+        timeLeft = 15;
     }
     timerDisplay.textContent = timeLeft;
 
-    // Display the answers
     for (const [key, value] of Object.entries(currentQuestion.answers)) {
         const button = document.createElement('button');
         button.textContent = value;
@@ -117,7 +141,6 @@ function showQuestion() {
     }
 }
 
-// Check the user's answer
 function checkAnswer(selectedAnswer) {
     clearInterval(timer);
     const currentQuestion = questions[currentQuestionIndex];
@@ -136,41 +159,31 @@ function checkAnswer(selectedAnswer) {
     }
 }
 
-// Start the timer for each question
 function startTimer() {
     timer = setInterval(() => {
         timeLeft--;
         timerDisplay.textContent = timeLeft;
         if (timeLeft <= 0) {
             clearInterval(timer);
-            checkAnswer('timeup');
+            resultsContainer.textContent = "Time's up! Moving to the next question.";
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+                startTimer();
+            } else {
+                endQuiz();
+            }
         }
     }, 1000);
 }
 
-// End the quiz and show the results
 function endQuiz() {
     endTime = new Date();
-    timeTaken = (endTime - startTime) / 1000; // Time in seconds
-
-    resultsContainer.style.display = 'block';
-    resultsContainer.textContent = `You finished the quiz with ${score} points! Time taken: ${timeTaken.toFixed(2)} seconds.`;
-
-    // Save the user's results to Firebase
+    timeTaken = (endTime - startTime) / 1000; // Convert to seconds
+    resultsContainer.textContent = `Your final score is ${score}. Time taken: ${timeTaken.toFixed(2)} seconds.`;
     db.collection('ranking').add({
         name: userName,
         score: score,
         timeTaken: timeTaken
     });
-
-    // Reset for next quiz
-    currentQuestionIndex = 0;
-    score = 0;
-    setTimeout(() => {
-        resultsContainer.style.display = 'none';
-        startScreen.style.display = 'block';
-        rankingSection.style.display = 'none';
-    }, 5000);
 }
-
-document.getElementById('start-btn').addEventListener('click', startQuiz);
