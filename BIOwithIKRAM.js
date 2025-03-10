@@ -94,7 +94,6 @@ function updateRanking(ranking) {
         const li = document.createElement('li');
         li.textContent = `${index + 1}. ${entry.name}: ${entry.score} points (${entry.timeTaken.toFixed(2)} seconds)`;
         rankingList.appendChild(li);
-    });
 }
 
 // Listen for real-time updates from Firestore
@@ -115,10 +114,11 @@ function deleteRankingAfter15Minutes() {
             doc.ref.delete();
         });
         alert("The ranking has been reset after 15 minutes.");
-        updateRanking([]); // Clear the ranking in the UI
-    }, 900000); // 15 minutes in milliseconds
+        updateRanking([]); 
+    }, 900000);
 }
 
+// Call the function to start the 15-minute timer
 deleteRankingAfter15Minutes();
 
 // Show the ranking section as soon as the quiz starts
