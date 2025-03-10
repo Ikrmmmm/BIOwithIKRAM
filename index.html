@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIO with IKRAM</title>
-    <link rel="stylesheet" href="BIOwithIKRAM.css">
+    <title>Inhibitors Quiz</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Add Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 </head>
 <body>
     <div class="quiz-container">
@@ -15,7 +18,7 @@
             <button id="start-btn">Start Quiz</button>
         </div>
         <div id="quiz" style="display: none;">
-            <div id="timer">Time left: <span id="time">5</span>s</div>
+            <div id="timer">Time left: <span id="time">10</span>s</div>
             <div id="question"></div>
             <div id="answers"></div>
         </div>
