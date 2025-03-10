@@ -8,14 +8,15 @@ const firebaseConfig = {
     appId: "YOUR_APP_ID"
 };
 
-// Import Firebase functions
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-import { getFirestore, collection, addDoc, onSnapshot, getDocs, deleteDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+// Import Firebase functions (adjusted to Firebase 9.x modular imports)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Variables for quiz and DOM elements
 const quizContainer = document.getElementById('quiz');
 const resultsContainer = document.getElementById('results');
 const startScreen = document.getElementById('start-screen');
@@ -85,7 +86,6 @@ const questions = [
 
 // Function to update the ranking list in the DOM
 function updateRanking(ranking) {
-    // Sort the ranking array by score (descending) and timeTaken (ascending)
     ranking.sort((a, b) => {
         if (b.score === a.score) {
             return a.timeTaken - b.timeTaken;
@@ -93,10 +93,7 @@ function updateRanking(ranking) {
         return b.score - a.score;
     });
 
-    // Clear the current ranking list
     rankingList.innerHTML = '';
-
-    // Display the sorted ranking
     ranking.forEach((entry, index) => {
         const li = document.createElement('li');
         li.textContent = `${index + 1}. ${entry.name}: ${entry.score} points (${entry.timeTaken.toFixed(2)} seconds)`;
@@ -104,19 +101,18 @@ function updateRanking(ranking) {
     });
 }
 
-// Real-time listener for Firestore updates (this will update the ranking without refreshing)
+// Real-time listener for Firestore updates
 onSnapshot(collection(db, 'ranking'), (snapshot) => {
     const ranking = [];
     snapshot.forEach((doc) => {
         ranking.push(doc.data());
     });
-    updateRanking(ranking);
+    updateRanking(ranking); // Update the ranking UI when Firestore changes
 });
 
 // Function to delete ranking history after 15 minutes
 function deleteRankingAfter15Minutes() {
     setTimeout(async () => {
-        // Clear the Firestore collection
         const rankingRef = collection(db, 'ranking');
         const snapshot = await getDocs(rankingRef);
         snapshot.forEach(async (doc) => {
@@ -127,10 +123,9 @@ function deleteRankingAfter15Minutes() {
     }, 900000); // 15 minutes in milliseconds (15 * 60 * 1000)
 }
 
-// Call the function to start the 15-minute timer
 deleteRankingAfter15Minutes();
 
-// Show the ranking section as soon as the quiz starts
+// Start the quiz
 function startQuiz() {
     userName = document.getElementById('name').value.trim();
     if (!userName) {
@@ -139,7 +134,7 @@ function startQuiz() {
     }
     startScreen.style.display = 'none';
     quizScreen.style.display = 'block';
-    rankingSection.style.display = 'block'; // Show the ranking section
+    rankingSection.style.display = 'block'; // Show ranking section
     startTime = new Date();
     showQuestion();
     startTimer();
@@ -150,11 +145,10 @@ function showQuestion() {
     questionDisplay.innerHTML = currentQuestion.question;
     answersDisplay.innerHTML = '';
 
-    // Set timeLeft based on the question index
     if (currentQuestionIndex < 3) {
-        timeLeft = 10; // Questions 1, 2, and 3 have 10 seconds
+        timeLeft = 10;
     } else {
-        timeLeft = 15; // Questions 4 and 5 have 15 seconds
+        timeLeft = 15;
     }
     timerDisplay.textContent = timeLeft;
 
@@ -209,13 +203,19 @@ function endQuiz() {
     resultsContainer.style.display = 'block';
     resultsContainer.textContent = `${userName}, your score is ${score}/${questions.length}. Time taken: ${timeTaken.toFixed(2)} seconds.`;
 
-    // Add current participant's data to Firestore
+    // Add participant's score and time to Firestore
     addDoc(collection(db, 'ranking'), {
         name: userName,
         score: score,
         timeTaken: timeTaken
     });
 }
+
+// Event listener for starting the quiz
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('start-btn').addEventListener('click', startQuiz);
+});
+
 
 // Wait for the DOM to be fully loaded before adding event listener
 document.addEventListener('DOMContentLoaded', function () {
