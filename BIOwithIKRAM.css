@@ -66,12 +66,22 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    z-index: 10; /* Make sure it is above other elements */
+    position: relative; /* Avoid overlapping with other elements */
 }
 
 button:hover {
     background-color: #45a049;
 }
 
+/* Ensure the input fields and button are spaced correctly */
+#start-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Ensure elements like quiz, results, and ranking display properly */
 #quiz, #results, #ranking {
     margin-top: 20px;
 }
