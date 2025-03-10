@@ -1,36 +1,13 @@
-/* Reset default styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Body Styling */
 body {
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #3b9ccc, #18a360);
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
 }
 
-/* Header Styling */
-header {
-    text-align: center;
-    width: 100%;
-    font-size: 24px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #18a360;
-    padding: 15px 0;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-/* Quiz Container Styling */
 .quiz-container {
     background-color: #fff;
     padding: 20px;
@@ -40,12 +17,10 @@ header {
     text-align: center;
 }
 
-/* Title Styling */
 h1 {
     margin-bottom: 20px;
 }
 
-/* Input and Button Styling */
 label {
     display: block;
     margin-bottom: 10px;
@@ -66,20 +41,13 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    width: 100%; /* Ensure button takes up full width */
 }
 
 button:hover {
     background-color: #45a049;
 }
 
-/* Ensure the input fields and button are spaced correctly */
-#start-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Ensure elements like quiz, results, and ranking display properly */
 #quiz, #results, #ranking {
     margin-top: 20px;
 }
@@ -94,7 +62,6 @@ button:hover {
     margin-bottom: 10px;
 }
 
-/* Answer Button Styling */
 #answers button {
     display: block;
     width: 100%;
@@ -111,12 +78,10 @@ button:hover {
     background-color: #ddd;
 }
 
-/* Result Styling */
 #results {
     font-weight: bold;
 }
 
-/* Ranking List Styling */
 #ranking-list {
     list-style-type: none;
     padding: 0;
@@ -124,4 +89,21 @@ button:hover {
 
 #ranking-list li {
     margin: 5px 0;
+}
+
+/* Ensure Start button is clickable and on top */
+#start-btn {
+    position: relative;
+    z-index: 1000; /* Ensure the button is above other elements */
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%; /* Ensure it's fully clickable */
+}
+
+#start-btn:hover {
+    background-color: #45a049;
 }
