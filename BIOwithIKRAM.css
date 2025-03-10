@@ -50,6 +50,8 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    z-index: 100;  
+    position: relative;
 }
 
 button:hover {
