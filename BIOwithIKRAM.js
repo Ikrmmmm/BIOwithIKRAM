@@ -109,6 +109,23 @@ db.collection('ranking').onSnapshot((snapshot) => {
     updateRanking(ranking);
 });
 
+// Function to delete ranking history after 15 minutes
+function deleteRankingAfter15Minutes() {
+    setTimeout(async () => {
+        // Clear the Firestore collection
+        const rankingRef = db.collection('ranking');
+        const snapshot = await rankingRef.get();
+        snapshot.forEach((doc) => {
+            doc.ref.delete();
+        });
+        alert("The ranking has been reset after 15 minutes.");
+        updateRanking([]); // Clear the ranking in the UI
+    }, 900000); // 15 minutes in milliseconds (15 * 60 * 1000)
+}
+
+// Call the function to start the 15-minute timer
+deleteRankingAfter15Minutes();
+
 // Show the ranking section as soon as the quiz starts
 function startQuiz() {
     userName = document.getElementById('name').value.trim();
