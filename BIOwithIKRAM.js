@@ -8,15 +8,10 @@ const firebaseConfig = {
     appId: "YOUR_APP_ID"
 };
 
-// Import Firebase functions (adjusted to Firebase 9.x modular imports)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-// Variables for quiz and DOM elements
 const quizContainer = document.getElementById('quiz');
 const resultsContainer = document.getElementById('results');
 const startScreen = document.getElementById('start-screen');
@@ -86,6 +81,7 @@ const questions = [
 
 // Function to update the ranking list in the DOM
 function updateRanking(ranking) {
+    // Sort the ranking array by score (descending) and timeTaken (ascending)
     ranking.sort((a, b) => {
         if (b.score === a.score) {
             return a.timeTaken - b.timeTaken;
@@ -93,7 +89,10 @@ function updateRanking(ranking) {
         return b.score - a.score;
     });
 
+    // Clear the current ranking list
     rankingList.innerHTML = '';
+
+    // Display the sorted ranking
     ranking.forEach((entry, index) => {
         const li = document.createElement('li');
         li.textContent = `${index + 1}. ${entry.name}: ${entry.score} points (${entry.timeTaken.toFixed(2)} seconds)`;
@@ -101,33 +100,33 @@ function updateRanking(ranking) {
     });
 }
 
-// Real-time listener for Firestore updates
-onSnapshot(collection(db, 'ranking'), (snapshot) => {
-    console.log("Snapshot received!");
+// Listen for real-time updates from Firestore
+db.collection('ranking').onSnapshot((snapshot) => {
     const ranking = [];
     snapshot.forEach((doc) => {
-        console.log("Document ID: ", doc.id, " Data: ", doc.data());
         ranking.push(doc.data());
     });
-    updateRanking(ranking); // Update the ranking UI when Firestore changes
+    updateRanking(ranking);
 });
 
 // Function to delete ranking history after 15 minutes
 function deleteRankingAfter15Minutes() {
     setTimeout(async () => {
-        const rankingRef = collection(db, 'ranking');
-        const snapshot = await getDocs(rankingRef);
-        snapshot.forEach(async (doc) => {
-            await deleteDoc(doc.ref);
+        // Clear the Firestore collection
+        const rankingRef = db.collection('ranking');
+        const snapshot = await rankingRef.get();
+        snapshot.forEach((doc) => {
+            doc.ref.delete();
         });
         alert("The ranking has been reset after 15 minutes.");
         updateRanking([]); // Clear the ranking in the UI
     }, 900000); // 15 minutes in milliseconds (15 * 60 * 1000)
 }
 
+// Call the function to start the 15-minute timer
 deleteRankingAfter15Minutes();
 
-// Start the quiz
+// Show the ranking section as soon as the quiz starts
 function startQuiz() {
     userName = document.getElementById('name').value.trim();
     if (!userName) {
@@ -136,7 +135,7 @@ function startQuiz() {
     }
     startScreen.style.display = 'none';
     quizScreen.style.display = 'block';
-    rankingSection.style.display = 'block'; // Show ranking section
+    rankingSection.style.display = 'block'; // Show the ranking section
     startTime = new Date();
     showQuestion();
     startTimer();
@@ -147,10 +146,11 @@ function showQuestion() {
     questionDisplay.innerHTML = currentQuestion.question;
     answersDisplay.innerHTML = '';
 
+    // Set timeLeft based on the question index
     if (currentQuestionIndex < 3) {
-        timeLeft = 10;
+        timeLeft = 10; // Questions 1, 2, and 3 have 10 seconds
     } else {
-        timeLeft = 15;
+        timeLeft = 15; // Questions 4 and 5 have 15 seconds
     }
     timerDisplay.textContent = timeLeft;
 
@@ -186,43 +186,33 @@ function startTimer() {
         timerDisplay.textContent = timeLeft;
         if (timeLeft <= 0) {
             clearInterval(timer);
-            resultsContainer.textContent = "Time's up! Moving to the next question.";
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
-                showQuestion();
-                startTimer();
-            } else {
-                endQuiz();
-            }
+            checkAnswer('timeup');
         }
     }, 1000);
 }
 
 function endQuiz() {
     endTime = new Date();
-    timeTaken = (endTime - startTime) / 1000;
-    quizScreen.style.display = 'none';
-    resultsContainer.style.display = 'block';
-    resultsContainer.textContent = `${userName}, your score is ${score}/${questions.length}. Time taken: ${timeTaken.toFixed(2)} seconds.`;
+    timeTaken = (endTime - startTime) / 1000; // Time in seconds
 
-    // Add participant's score and time to Firestore
-    addDoc(collection(db, 'ranking'), {
+    resultsContainer.style.display = 'block';
+    resultsContainer.textContent = `You finished the quiz with ${score} points! Time taken: ${timeTaken.toFixed(2)} seconds.`;
+
+    // Save the user's results to Firebase
+    db.collection('ranking').add({
         name: userName,
         score: score,
         timeTaken: timeTaken
-    })
-    .then(() => {
-        console.log("New ranking entry added successfully!");
-    })
-    .catch((error) => {
-        console.error("Error adding document: ", error);
     });
+
+    // Reset for next quiz
+    currentQuestionIndex = 0;
+    score = 0;
+    setTimeout(() => {
+        resultsContainer.style.display = 'none';
+        startScreen.style.display = 'block';
+        rankingSection.style.display = 'none';
+    }, 5000);
 }
 
-// Event listener for starting the quiz
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('start-btn').addEventListener('click', startQuiz);
-});
-
-    document.getElementById('start-btn').addEventListener('click', startQuiz);
-});
+document.getElementById('start-btn').addEventListener('click', startQuiz);
